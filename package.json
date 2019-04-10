@@ -1,0 +1,25 @@
+{
+  "name": "nbd",
+  "version": "1.0.0",
+  "description": "nbd lab",
+  "main": "index.js",
+  "dependencies": {
+    "moment": "^2.24.0",
+    "neode": "^0.2.14"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vladislav-novik/nbd.git"
+  },
+  "author": "Vlad Novik",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vladislav-novik/nbd/issues"
+  },
+  "homepage": "https://github.com/vladislav-novik/nbd#readme"
+}

@@ -1,0 +1,46 @@
+// max commented post
+match (p:Post)
+with size((p) <-[:COMMENTED]- ()) as commentsCount
+with max(commentsCount) as maxCommentsCount
+match (p:Post) <-[:COMMENTED]- (c:Comment)
+with p, c, size((p)<-[:COMMENTED]-()) as commentsCount
+where commentsCount = maxCommentsCount
+return p, c, commentsCount;
+
+
+// top 5 disscussed categories (comments in posts of category)
+match (c:Category)
+with c, size((c:Category)<-[:IS_IN]-(:Post)<-[:COMMENTED]-(:Comment)) as commentsAmount
+return c as Category, commentsAmount as CommentsAmount
+order by commentsAmount desc
+limit 5
+
+
+// bot liked tags (likes in posts and comments)
+match (t:Tag)
+with t, size((t)<-[:TAGGED]-(:Post)) as postsAmount
+where postsAmount > 0
+with t, size((t)<-[:TAGGED]-(:Post)<-[:LIKED]-()) as postRates, size((t)<-[:TAGGED]-(:Post)<-[:COMMENTED]-(:Comment)<-[:LIKED]-()) as commentRates
+with t, postRates + commentRates as rates
+return t.name as CategoryName, rates
+order by rates asc
+limit 1
+
+
+// top 5 rated post
+match (p:Post)<-[postRate:LIKED]-(:User)
+with p, postRate, size((p:Post)<-[:LIKED]-()) as likesAmount
+with p, likesAmount, sum(postRate.rate) as sumRate
+with p, sumRate/likesAmount as rate
+return p.title, rate
+order by rate desc
+limit 5
+
+
+// user is most rated
+match (u:User)-[rates:LIKED]->()
+with u, count(rates.rate) as ratesAmount, sum(rates.rate) as ratesSum
+with u, ratesAmount, ratesSum/ratesAmount as avgRate
+return *
+order by ratesAmount desc
+limit 10

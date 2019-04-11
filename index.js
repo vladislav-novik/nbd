@@ -7,18 +7,16 @@ const users = require('./mocks/users');
 const posts = require('./mocks/posts');
 const comments = require('./mocks/comments');
 
-// console.log(randomDate())
-
 const instance = new Neode.fromEnv();
 initializeDb();
 
 async function initializeDb() {
     instance.with({
-        User: require('./models/labels/user'),
-        Post: require('./models/labels/post'),
-        Comment: require('./models/labels/comment'),
-        Tag: require('./models/labels/tag'),
-        Category: require('./models/labels/Category')
+        User: require('./models/user'),
+        Post: require('./models/post'),
+        Comment: require('./models/comment'),
+        Tag: require('./models/tag'),
+        Category: require('./models/category')
     });
 
     await uploadNodes()
@@ -99,11 +97,11 @@ async function taggedRelation() {
 }
 
 async function wrotePostsRelation() {
-    const { length } = posts;
+    const { length } = users;
 
-    for (let i = 0; i < users.length; i++) {
+    for (let i = 0; i < posts.length; i++) {
         await instance.cypher(`MATCH (p:Post {id: {postId}}), (u:User {id:{userId}}) 
-            MERGE (u)-[:WROTE]->(p)`, { postId: posts[randomNum(length - 1)].id, userId: users[i].id });
+            MERGE (u)-[:WROTE]->(p)`, { postId: posts[i].id, userId: users[randomNum(length - 1)].id });
     }
 }
 
@@ -131,7 +129,7 @@ async function likedPostRelation() {
 
     for (let i = 0; i < 10000; i++) {
         await instance.cypher(`MATCH (p:Post {id: {postId}}), (u:User {id:{userId}}) 
-            MERGE (u)-[:LIKED { rate: {rate}, createdAt: {createdAt} }]->(p)`, { //, createdAt: {createdAt}
+            MERGE (u)-[:LIKED { rate: {rate}, createdAt: {createdAt} }]->(p)`, {
                 postId: posts[randomNum(postsLength - 1)].id, 
                 userId: users[randomNum(usersLength - 1)].id,
                 rate: randomRate(),
@@ -146,7 +144,7 @@ async function likedCommentRelation() {
 
     for (let i = 0; i < 10000; i++) {
         await instance.cypher(`MATCH (c:Comment {id: {commentId}}), (u:User {id:{userId}}) 
-            MERGE (u)-[:LIKED { rate: {rate}, createdAt: {createdAt} }]->(c)`, { //, createdAt: {createdAt}
+            MERGE (u)-[:LIKED { rate: {rate}, createdAt: {createdAt} }]->(c)`, {
                 commentId: comments[randomNum(commentsLength - 1)].id, 
                 userId: users[randomNum(usersLength - 1)].id,
                 rate: randomRate(),

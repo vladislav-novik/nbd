@@ -16,7 +16,7 @@ order by commentsAmount desc
 limit 5
 
 
-// bot liked tags (likes in posts and comments)
+// bot rated tags (rates in posts and comments)
 match (t:Tag)
 with t, size((t)<-[:TAGGED]-(:Post)) as postsAmount
 where postsAmount > 0

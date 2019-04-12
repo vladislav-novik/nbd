@@ -16,7 +16,7 @@ order by commentsAmount desc
 limit 5
 
 
-// bot rated tags (rates in posts and comments)
+// bot rated tags (amount of rates in posts and comments)
 match (t:Tag)
 with t, size((t)<-[:TAGGED]-(:Post)) as postsAmount
 where postsAmount > 0
@@ -37,7 +37,7 @@ order by rate desc
 limit 5
 
 
-// user is most rated
+// top 10 users is most rated
 match (u:User)-[rates:LIKED]->()
 with u, count(rates.rate) as ratesAmount, sum(rates.rate) as ratesSum
 with u, ratesAmount, ratesSum/ratesAmount as avgRate

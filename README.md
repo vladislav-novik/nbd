@@ -1,1 +1,1 @@
-need to install neode, moment
+Models and Queries for Neo4j NoSql database for university classes
